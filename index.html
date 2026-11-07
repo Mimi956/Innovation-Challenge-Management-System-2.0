@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovation Challenge Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>
+                <h1>InnoPulse</h1>
+                <small>Innovation Challenge Management System</small>
+            </div>
+        </div>
+        <div class="nav-controls">
+            <div class="role-selector">
+                <label><i class="fa-solid fa-user-tag"></i> Active Role:</label>
+                <select id="role-select">
+                    <option value="participant">Participant (Innovator)</option>
+                    <option value="organization">Organisation (Evaluator)</option>
+                    <option value="public">Guest / Public Viewer</option>
+                </select>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-secondary" id="open-register-modal-btn">
+                    <i class="fa-solid fa-user-plus"></i> Sign Up
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="app-layout">
+
+    <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <ul class="nav-links">
+                <li class="active" data-tab="challenges">
+                    <i class="fa-solid fa-trophy"></i> <span>Challenges & Problems</span>
+                </li>
+                <li data-tab="organizations">
+                    <i class="fa-solid fa-building-columns"></i> <span>Organisations & Rubrics</span>
+                </li>
+                <li data-tab="submit-proposal" id="nav-item-submit">
+                    <i class="fa-solid fa-paper-plane"></i> <span>Submit Proposal</span>
+                </li>
+                <li data-tab="my-ideas" id="nav-item-tracker">
+                    <i class="fa-solid fa-list-check"></i> <span>Idea Tracking Desk</span>
+                </li>
+                <li data-tab="evaluate" id="nav-item-eval">
+                    <i class="fa-solid fa-check-to-slot"></i> <span>Evaluation Panel</span>
+                </li>
+                <li data-tab="leaderboard">
+                    <i class="fa-solid fa-ranking-star"></i> <span>Leaderboard & Winners</span>
+                </li>
+                <li data-tab="announcements">
+                    <i class="fa-solid fa-bullhorn"></i> <span>Announcements</span>
+                </li>
+            </ul>
+
+            <div class="user-badge" id="current-user-card">
+                <div class="avatar"><i class="fa-solid fa-user-astronaut"></i></div>
+                <div class="user-meta">
+                    <strong id="badge-name">Dev Team Nova</strong>
+                    <span id="badge-role">Participant Mode</span>
+                </div>
+            </div>
+        </aside>
+
+    <!-- Main Content Area -->
+        <main class="content-container">
+
+        <!-- 1. Challenges Section -->
+            <section id="challenges" class="tab-panel active">
+                <div class="section-header">
+                    <div>
+                        <h2>Open Innovation Challenges</h2>
+                        <p>Explore corporate and social impact problem statements, funding pools, and requirements.</p>
+                    </div>
+                    <button class="btn btn-primary" id="btn-create-challenge" style="display:none;">
+                        <i class="fa-solid fa-plus"></i> Post New Challenge
+                    </button>
+                </div>
+
+                <div class="grid-layout" id="challenge-list-container">
+            <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+        <!-- 2. Organisations & Evaluation Criteria Directory -->
+            <section id="organizations" class="tab-panel">
+                <div class="section-header">
+                    <div>
+                        <h2>Registered Host Organisations</h2>
+                        <p>Every organisation posts their domain focus along with the published scoring rubrics used to judge submissions.</p>
+                    </div>
+                </div>
+                <div class="grid-layout" id="org-list-container">
+            <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+        <!-- 3. Proposal Submission Form -->
+            <section id="submit-proposal" class="tab-panel">
+                <div class="card form-card">
+                    <h2><i class="fa-solid fa-rocket"></i> Submit Innovation Proposal</h2>
+                    <p>Deliver your project specs. You can attach links for pitch videos, hosted live demos, git repositories, or technical whitepapers.</p>
+
+                    <form id="proposal-submission-form">
+                        <div class="form-group">
+                            <label for="sub-challenge">Target Challenge Problem Statement *</label>
+                            <select id="sub-challenge" required>
+                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sub-title">Solution / Idea Title *</label>
+                                <input type="text" id="sub-title" placeholder="e.g. AgriSense IoT Precision Harvester" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sub-applicant">Participant / Team Name *</label>
+                                <input type="text" id="sub-applicant" placeholder="Team name or Lead developer" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sub-summary">Executive Summary & Technical Architecture *</label>
+                            <textarea id="sub-summary" rows="4" placeholder="Detail how your system solves the challenge statement, the tech stack used, and the novelty factor..." required></textarea>
+                        </div>
+
+                        <h3 class="form-subheading"><i class="fa-solid fa-paperclip"></i> Multimedia & Deliverable Assets</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-video"></i> Pitch Video Link (YouTube / Vimeo / Loom)</label>
+                                <input type="url" id="sub-video" placeholder="https://youtube.com/watch?v=...">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-globe"></i> Live Website / Deployed Web Demo</label>
+                                <input type="url" id="sub-website" placeholder="https://your-solution-demo.app">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fa-brands fa-github"></i> Source Code Repository</label>
+                                <input type="url" id="sub-github" placeholder="https://github.com/organization/repo">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-file-pdf"></i> Technical Documentation / PDF / Whitepaper</label>
+                                <input type="url" id="sub-docs" placeholder="https://docs.google.com/... or cloud document link">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-upload"></i> Complete Proposal Submission
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        <!-- 4. Idea Tracking Desk -->
+            <section id="my-ideas" class="tab-panel">
+                <div class="section-header">
+                    <div>
+                        <h2>Idea Tracker Portal</h2>
+                        <p>Live status tracker of all proposals submitted across active challenges.</p>
+                    </div>
+                </div>
+                <div class="table-container card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Idea / Solution</th>
+                                <th>Target Challenge</th>
+                                <th>Participant</th>
+                                <th>Deliverables</th>
+                                <th>Status</th>
+                                <th>Evaluation Score</th>
+                                <th>Feedback Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tracker-table-body">
+                <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        <!-- 5. Evaluation & Review Panel -->
+            <section id="evaluate" class="tab-panel">
+                <div class="section-header">
+                    <div>
+                        <h2>Organisation Review & Scoring Panel</h2>
+                        <p>Grade submissions against the four standard 25-point rubrics (Max 100). The scores and status will be published directly to the public leaderboard.</p>
+                    </div>
+                </div>
+                <div class="grid-layout" id="evaluation-cards-container">
+            <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+        <!-- 6. Public Leaderboard -->
+            <section id="leaderboard" class="tab-panel">
+                <div class="section-header">
+                    <div>
+                        <h2>Official Challenge Leaderboard & Results</h2>
+                        <p>Real-time standings ranked by verified jury points.</p>
+                    </div>
+                    <div>
+                        <select id="leaderboard-filter">
+                            <option value="all">All Challenge Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+        <!-- Top 3 Podium Highlights -->
+                <div class="podium-grid" id="podium-display">
+            <!-- Populated by JavaScript -->
+                </div>
+
+                <div class="card table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Solution Title</th>
+                                <th>Participant</th>
+                                <th>Challenge Domain</th>
+                                <th>Verified Score</th>
+                                <th>Status</th>
+                                <th>Demo Link</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body">
+                <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        <!-- 7. Announcements -->
+            <section id="announcements" class="tab-panel">
+                <div class="section-header">
+                    <div>
+                        <h2>Official Bulletins & Announcements</h2>
+                        <p>Key dates, shortlist milestones, and winner declarations.</p>
+                    </div>
+                    <button class="btn btn-primary" id="btn-create-announcement" style="display:none;">
+                        <i class="fa-solid fa-plus"></i> Post Announcement
+                    </button>
+                </div>
+                <div class="announcements-stream" id="announcements-container">
+            <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Registration Modal (Participant & Org) -->
+    <div class="modal-overlay" id="register-modal">
+        <div class="modal card">
+            <button class="close-btn" id="close-reg-modal">&times;</button>
+                <h2>Join the Platform</h2>
+                <div class="tab-switcher">
+                    <button class="tab-btn active" id="tab-reg-participant">Participant Signup</button>
+                    <button class="tab-btn" id="tab-reg-org">Organisation Signup</button>
+                </div>
+
+        <!-- Participant Form -->
+                <form id="participant-reg-form">
+                    <div class="form-group">
+                        <label>Full Name / Team Name *</label>
+                        <input type="text" id="reg-part-name" required placeholder="e.g. Mitra Dimiri / CyberSquad">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="reg-part-email" required placeholder="dev@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Skillset / Domain *</label>
+                        <input type="text" id="reg-part-skills" required placeholder="e.g. Full-Stack Python, ML, IoT">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Complete Participant Registration</button>
+                </form>
+
+        <!-- Organisation Form -->
+                <form id="org-reg-form" style="display: none;">
+                    <div class="form-group">
+                        <label>Organisation / Company Name *</label>
+                        <input type="text" id="reg-org-name" required placeholder="e.g. AgriFuture Foundation">
+                    </div>
+                    <div class="form-group">
+                        <label>Corporate Email *</label>
+                        <input type="email" id="reg-org-email" required placeholder="challenges@agrifuture.org">
+                    </div>
+                    <div class="form-group">
+                        <label>Domain Focus / Mission Bio *</label>
+                        <textarea id="reg-org-bio" rows="3" required placeholder="Brief description of your organisation and challenge mission..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Evaluation Criteria Published in Bio *</label>
+                        <input type="text" id="reg-org-criteria" required placeholder="e.g. 1. Scalability (25%), 2. Usability (25%), 3. Tech Stack (25%), 4. Impact (25%)">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register Organisation</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- Challenge Creation Modal -->
+        <div class="modal-overlay" id="challenge-modal">
+            <div class="modal card">
+                <button class="close-btn" id="close-challenge-modal">&times;</button>
+                <h2>Post an Innovation Challenge</h2>
+                <form id="challenge-create-form">
+                    <div class="form-group">
+                        <label>Host Organisation *</label>
+                        <input type="text" id="ch-org-name" readonly value="AgriFuture Labs">
+                    </div>
+                    <div class="form-group">
+                        <label>Challenge Title *</label>
+                        <input type="text" id="ch-title" required placeholder="e.g. Autonomous Field Crop Health Analyzer">
+                    </div>
+                    <div class="form-group">
+                        <label>Problem Statement *</label>
+                        <textarea id="ch-desc" rows="4" required placeholder="Detail the concrete issue, scope, and technical hurdles..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prize Grant / Award *</label>
+                            <input type="text" id="ch-prize" required placeholder="e.g. $15,000 USD Grant">
+                        </div>
+                        <div class="form-group">
+                            <label>Submission Deadline *</label>
+                            <input type="date" id="ch-deadline" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Publish Challenge</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- Announcement Creation Modal -->
+        <div class="modal-overlay" id="announcement-modal">
+            <div class="modal card">
+                <button class="close-btn" id="close-announcement-modal">&times;</button>
+                <h2>Publish Official Announcement</h2>
+                <form id="announcement-create-form">
+                    <div class="form-group">
+                        <label>Announcement Headline *</label>
+                        <input type="text" id="an-title" required placeholder="e.g. Grand Finalist Shortlist Announced">
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="an-category">
+                            <option value="Milestone">Milestone</option>
+                            <option value="Shortlist">Shortlist</option>
+                            <option value="Winners">Winners Proclamation</option>
+                            <option value="Deadline Extension">Deadline Notice</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Details / Body Content *</label>
+                        <textarea id="an-content" rows="4" required placeholder="Compose official release..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Broadcast Bulletin</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- Evaluation Modal -->
+        <div class="modal-overlay" id="eval-scoring-modal">
+            <div class="modal card">
+                <button class="close-btn" id="close-eval-modal">&times;</button>
+                <h2>Score & Review Proposal</h2>
+                <p id="eval-modal-subheading" style="color:var(--text-muted); margin-bottom:1rem;"></p>
+
+                <form id="scoring-form">
+                    <input type="hidden" id="eval-proposal-id">
+
+                    <div class="criteria-row">
+                        <div class="crit-label">
+                            <strong>1. Innovation & Novelty (Max 25)</strong>
+                            <span id="score1-val" class="pill">20</span>
+                        </div>
+                        <input type="range" id="score1" min="0" max="25" value="20" class="score-slider">
+                    </div>
+
+                    <div class="criteria-row">
+                        <div class="crit-label">
+                            <strong>2. Technical Feasibility & Architecture (Max 25)</strong>
+                            <span id="score2-val" class="pill">22</span>
+                        </div>
+                        <input type="range" id="score2" min="0" max="25" value="22" class="score-slider">
+                    </div>
+
+                    <div class="criteria-row">
+                        <div class="crit-label">
+                            <strong>3. Scalability & Market Impact (Max 25)</strong>
+                            <span id="score3-val" class="pill">21</span>
+                        </div>
+                        <input type="range" id="score3" min="0" max="25" value="21" class="score-slider">
+                    </div>
+
+                    <div class="criteria-row">
+                        <div class="crit-label">
+                            <strong>4. Prototype Execution & Polish (Max 25)</strong>
+                            <span id="score4-val" class="pill">23</span>
+                        </div>
+                        <input type="range" id="score4" min="0" max="25" value="23" class="score-slider">
+                    </div>
+
+                    <div class="total-score-badge">
+                        <span>Calculated Final Score:</span>
+                        <span class="score-sum" id="total-score-display">86 / 100</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jury Feedback / Recommendations</label>
+                        <textarea id="eval-feedback" rows="3" placeholder="Provide actionable evaluation notes for the innovators..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Update Proposal Status *</label>
+                        <select id="eval-status-select" required>
+                            <option value="Reviewed">Reviewed</option>
+                            <option value="Finalist">Promote to Shortlisted Finalist</option>
+                            <option value="Winner">Award as Grand Winner 🏆</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Publish Evaluation & Update Leaderboard
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

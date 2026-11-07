@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovation Challenge Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for crisp intuitive icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .badge-winner {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        .badge-finalist {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: white;
+        }
+        /* Custom modal backdrop blur */
+        .modal-blur {
+            backdrop-filter: blur(4px);
+        }
+        /* Custom smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- Top Announcement Bar / Notification Ribbon -->
+    <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="bg-indigo-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span>
+                <span id="ribbonNotice">🎉 2026 Global CleanTech Challenge submissions are now open for peer & jury evaluations!</span>
+            </div>
+            <div class="flex items-center space-x-4 text-slate-300">
+                <span class="hidden sm:inline"><i class="fa-solid fa-clock mr-1"></i> Stage: In-Progress Evaluations</span>
+                <span class="text-indigo-300 hover:text-white cursor-pointer transition" onclick="switchTab('announcements')">View All Updates &rarr;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Brand / Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('challenges')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                        <i class="fa-solid fa-lightbulb text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight flex items-center gap-1.5">
+                            InnoNexus <span class="text-xs bg-indigo-100 text-brand-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">ICMS</span>
+                        </span>
+                        <p class="text-[11px] text-slate-500 hidden sm:block">Innovation Challenge Management System</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium text-slate-600">
+                    <button onclick="switchTab('challenges')" id="nav-challenges" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100 text-brand-600 bg-brand-50 font-semibold">
+                        <i class="fa-solid fa-cubes mr-1.5"></i>Challenges
+                    </button>
+                    <button onclick="switchTab('organizations')" id="nav-organizations" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-building mr-1.5"></i>Organisations & Criteria
+                    </button>
+                    <button onclick="switchTab('submit')" id="nav-submit" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-file-arrow-up mr-1.5"></i>Submit Proposal
+                    </button>
+                    <button onclick="switchTab('evaluations')" id="nav-evaluations" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-clipboard-check mr-1.5"></i>Evaluation Portal
+                    </button>
+                    <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-trophy mr-1.5"></i>Leaderboard
+                    </button>
+                    <button onclick="switchTab('announcements')" id="nav-announcements" class="nav-btn px-3 py-2 rounded-lg transition hover:text-brand-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-bullhorn mr-1.5"></i>Notices
+                    </button>
+                </nav>
+
+                <!-- Role Selector & Auth Simulation -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative inline-block text-left">
+                        <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1">
+                            <span class="text-xs text-slate-500 font-medium px-2 hidden sm:inline"><i class="fa-solid fa-user-gear mr-1"></i>Role:</span>
+                            <select id="userRoleSelector" onchange="handleRoleChange(this.value)" class="bg-white border-0 text-xs font-semibold rounded-md py-1 px-2.5 shadow-sm text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="participant">Participant (Innovator)</option>
+                                <option value="organization">Organisation (Evaluator)</option>
+                                <option value="guest">Public / Visitor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="authButtons" class="flex items-center space-x-2">
+                        <button onclick="openModal('participantSignupModal')" class="text-xs font-semibold px-3 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition shadow-sm">
+                            Sign Up
+                        </button>
+                        <button onclick="openModal('orgRegisterModal')" class="text-xs font-semibold px-3 py-2 text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition shadow-sm">
+                            Register Org
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Bar -->
+            <div class="md:hidden flex overflow-x-auto py-2 border-t border-slate-100 space-x-2 text-xs">
+                <button onclick="switchTab('challenges')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Challenges</button>
+                <button onclick="switchTab('organizations')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Organisations</button>
+                <button onclick="switchTab('submit')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Submit</button>
+                <button onclick="switchTab('evaluations')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Evaluations</button>
+                <button onclick="switchTab('leaderboard')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Leaderboard</button>
+                <button onclick="switchTab('announcements')" class="px-2.5 py-1.5 rounded-md whitespace-nowrap bg-slate-100 text-slate-700 font-medium">Notices</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Active User Context Banner -->
+    <div id="roleInfoBar" class="bg-indigo-50 border-b border-indigo-100 px-4 py-2.5">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs text-indigo-900 gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-0.5 rounded font-semibold text-xs bg-indigo-200 text-indigo-800" id="roleBadge">Participant Mode</span>
+                <span id="roleGreeting">Welcome, <strong>Aria Chen (GreenNova Labs)</strong>. Browse open problems or submit your pitch!</span>
+            </div>
+            <div class="flex items-center space-x-3 text-indigo-700 font-medium">
+                <span id="quickStats">3 Active Challenges | 1 Submitted Idea</span>
+                <button onclick="seedSampleData()" title="Reset to initial state" class="hover:text-indigo-950 underline text-[11px]"><i class="fa-solid fa-arrows-rotate mr-1"></i>Reset Demo Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CHALLENGES LIST & CREATION         -->
+        <!-- ========================================== -->
+        <section id="tab-challenges" class="tab-content block space-y-6">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl text-white p-6 sm:p-10 shadow-xl overflow-hidden">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                        <i class="fa-solid fa-bolt mr-1.5 text-yellow-400"></i> Open Innovation Ecosystem
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                        Solve Real World Problems. <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-brand-100">Pitch Ideas, Win Grants & Get Evaluated.</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Industry-leading organisations define explicit problem statements and published evaluation rubrics. Submit video pitches, prototypes, and technical whitepapers to gain mentorship and funding.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchTab('submit')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Submit an Innovation Idea
+                        </button>
+                        <button onclick="openModal('createChallengeModal')" id="heroCreateChallengeBtn" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition flex items-center">
+                            <i class="fa-solid fa-plus-circle mr-2 text-indigo-400"></i> Post a Challenge (Orgs Only)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Filter Domain:</span>
+                    <div class="flex flex-wrap gap-1.5" id="domainFilterPills">
+                        <button onclick="filterChallenges('all')" class="domain-pill active px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white">All (3)</button>
+                        <button onclick="filterChallenges('CleanTech & Climate')" class="domain-pill px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">CleanTech & Climate</button>
+                        <button onclick="filterChallenges('Smart Agri & Food')" class="domain-pill px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Smart Agri & Food</button>
+                        <button onclick="filterChallenges('HealthTech & AI')" class="domain-pill px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">HealthTech & AI</button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    <input type="text" id="challengeSearchInput" oninput="searchChallenges(this.value)" placeholder="Search challenges or keywords..." class="pl-9 pr-4 py-2 border border-slate-200 text-xs rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none w-full sm:w-64">
+                </div>
+            </div>
+
+            <!-- Challenge Cards Grid -->
+            <div id="challengesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: ORGANISATIONS & EVALUATION CRITERIA -->
+        <!-- ========================================== -->
+        <section id="tab-organizations" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Registered Organisations & Evaluation Criteria</h2>
+                    <p class="text-sm text-slate-500">Each organization explicitly lists their bio, focus domains, and transparent 100-point scoring rubrics used by evaluators.</p>
+                </div>
+                <button onclick="openModal('orgRegisterModal')" class="px-4 py-2 bg-brand-600 text-white font-medium text-xs rounded-xl hover:bg-brand-700 transition flex items-center">
+                    <i class="fa-solid fa-building-circle-check mr-2"></i> Join as Host Organisation
+                </button>
+            </div>
+
+            <div id="organizationsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: PROPOSAL SUBMISSION & TRACKER       -->
+        <!-- ========================================== -->
+        <section id="tab-submit" class="tab-content hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Proposal Submission Form (7 Cols) -->
+                <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Innovator Gateway</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Submit Innovation Proposal</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                            Share your solution using rich media: pitch videos, live websites/demos, architecture links, and executive abstracts.
+                        </p>
+                    </div>
+
+                    <form id="proposalForm" onsubmit="handleProposalSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Select Active Challenge <span class="text-red-500">*</span></label>
+                            <select id="propChallengeSelect" required class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Project / Solution Title <span class="text-red-500">*</span></label>
+                                <input type="text" id="propTitle" required placeholder="e.g. AeroBio Plastic Digestion Array" class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Team or Lead Innovator <span class="text-red-500">*</span></label>
+                                <input type="text" id="propTeam" required placeholder="e.g. EcoMatrix Labs" class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Executive Summary & Problem Alignment <span class="text-red-500">*</span></label>
+                            <textarea id="propSummary" rows="3" required placeholder="Describe how your solution solves the organization's problem, technology stack, and novelty..." class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-2.5 focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <!-- Versatile Proposal Formats: Video, Website, Documentation -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-photo-film mr-2 text-brand-600"></i> Multi-Format Pitch Artifacts
+                            </h4>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> Video Pitch URL (YouTube/Vimeo/Loom)</label>
+                                    <input type="url" id="propVideoUrl" placeholder="https://youtu.be/sample-pitch" class="w-full text-xs rounded-lg border border-slate-300 p-2 focus:ring-brand-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1"><i class="fa-solid fa-globe text-blue-500 mr-1"></i> Live Website / Prototype URL</label>
+                                    <input type="url" id="propWebUrl" placeholder="https://myinnovativedemo.app" class="w-full text-xs rounded-lg border border-slate-300 p-2 focus:ring-brand-500 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1"><i class="fa-brands fa-github text-slate-800 mr-1"></i> GitHub / Code Repository</label>
+                                    <input type="url" id="propRepoUrl" placeholder="https://github.com/team/repo" class="w-full text-xs rounded-lg border border-slate-300 p-2 focus:ring-brand-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1"><i class="fa-solid fa-file-pdf text-red-600 mr-1"></i> Whitepaper / Slide Deck Doc Link</label>
+                                    <input type="url" id="propDocUrl" placeholder="https://drive.google.com/doc-link" class="w-full text-xs rounded-lg border border-slate-300 p-2 focus:ring-brand-500 focus:outline-none">
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-400">Note: External links, video walkthroughs, and technical documents provide evaluators with verifiable proof of concept.</p>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-brand-600/30 flex items-center justify-center">
+                            <i class="fa-solid fa-upload mr-2"></i> Submit Proposal for Jury Review
+                        </button>
+                    </form>
+                </div>
+
+                <!-- My Proposals Tracker (5 Cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-lg">My Proposed Ideas</h3>
+                                <p class="text-xs text-slate-500">Track real-time evaluation status and scores</p>
+                            </div>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-md" id="mySubmissionsCount">0 Submissions</span>
+                        </div>
+                        <div id="myProposalsList" class="mt-4 space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Innovator Rules & Tips Card -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-3xl border border-indigo-100 text-xs text-indigo-950 space-y-3">
+                        <h4 class="font-bold text-sm flex items-center text-indigo-900">
+                            <i class="fa-solid fa-circle-info mr-2 text-brand-600"></i> How Evaluation Works
+                        </h4>
+                        <p class="leading-relaxed">
+                            Once submitted, the hosting organisation’s designated review committee checks your proposal against their published rubrics (Feasibility, Novelty, Scalability, and Presentation).
+                        </p>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                            <li>Keep demo links and video access set to public.</li>
+                            <li>Finalists and winners are announced openly on the public leaderboard.</li>
+                            <li>Scores are finalized once evaluated by verified organizers.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: EVALUATION & SCORING PORTAL (ORGS)  -->
+        <!-- ========================================== -->
+        <section id="tab-evaluations" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div>
+                    <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 mb-2">
+                        <i class="fa-solid fa-shield-halved"></i> <span>Organisation Jury Panel</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900">Proposal Evaluation & Scoring Deck</h2>
+                    <p class="text-xs sm:text-sm text-slate-500">Assess incoming proposals against your published rubrics. Aggregate scores automatically rank ideas on the public leaderboard.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs font-semibold text-slate-600">Filter by Challenge:</label>
+                    <select id="evalChallengeFilter" onchange="renderEvaluationDeck()" class="text-xs font-medium border border-slate-300 rounded-lg p-2 focus:ring-brand-500">
+                        <option value="all">All Challenges</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Proposals Awaiting or Under Review -->
+            <div class="grid grid-cols-1 gap-6" id="evaluationsDeck">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: PUBLIC LEADERBOARD & RESULTS        -->
+        <!-- ========================================== -->
+        <section id="tab-leaderboard" class="tab-content hidden space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-2 py-4">
+                <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wider">
+                    <i class="fa-solid fa-crown mr-1 text-amber-600"></i> Official Results & Hall of Fame
+                </span>
+                <h2 class="text-3xl font-extrabold text-slate-900">Innovation Challenge Leaderboard</h2>
+                <p class="text-sm text-slate-500">Evaluated by host organizations based on standardized 100-point criteria. Highlighting Finalists and Grand Winners.</p>
+            </div>
+
+            <!-- Leaderboard Filter -->
+            <div class="flex justify-center">
+                <div class="inline-flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm text-xs font-semibold">
+                    <button onclick="renderLeaderboard('all')" class="lb-filter-btn px-4 py-2 rounded-lg bg-brand-600 text-white" id="lb-filter-all">Overall Top Ideas</button>
+                    <button onclick="renderLeaderboard('C1')" class="lb-filter-btn px-4 py-2 rounded-lg text-slate-600 hover:text-brand-600" id="lb-filter-C1">Ocean CleanTech</button>
+                    <button onclick="renderLeaderboard('C2')" class="lb-filter-btn px-4 py-2 rounded-lg text-slate-600 hover:text-brand-600" id="lb-filter-C2">Smart Farming</button>
+                    <button onclick="renderLeaderboard('C3')" class="lb-filter-btn px-4 py-2 rounded-lg text-slate-600 hover:text-brand-600" id="lb-filter-C3">HealthTech AI</button>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium (Shown dynamically) -->
+            <div id="podiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                <!-- Populated via JS -->
+            </div>
+
+            <!-- Full Ranked Table -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 text-sm">Official Standings & Criteria Breakdown</h3>
+                    <span class="text-xs text-slate-400">Total Reviewed: <span id="totalReviewedCount">0</span></span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-3.5">Rank</th>
+                                <th class="px-6 py-3.5">Innovation Title</th>
+                                <th class="px-6 py-3.5">Challenge & Host</th>
+                                <th class="px-6 py-3.5">Innovator</th>
+                                <th class="px-6 py-3.5 text-center">Score (Max 100)</th>
+                                <th class="px-6 py-3.5 text-center">Status</th>
+                                <th class="px-6 py-3.5 text-right">Links</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardTableBody" class="divide-y divide-slate-100 font-normal">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 6: ANNOUNCEMENTS & NOTICE BOARD        -->
+        <!-- ========================================== -->
+        <section id="tab-announcements" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Challenge Announcements & Proclamations</h2>
+                    <p class="text-sm text-slate-500">Official bulletins on evaluation schedules, shortlisted finalists, and award announcements.</p>
+                </div>
+                <button onclick="openModal('postNoticeModal')" id="postNoticeBtn" class="px-4 py-2 bg-indigo-900 text-white font-medium text-xs rounded-xl hover:bg-indigo-800 transition flex items-center">
+                    <i class="fa-solid fa-bullhorn mr-2"></i> Post Bulletin Notice
+                </button>
+            </div>
+
+            <div id="announcementsList" class="space-y-4 max-w-4xl mx-auto">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-lightbulb text-brand-600"></i>
+                <span class="font-bold text-slate-700">Innovation Challenge Management System</span>
+                <span>&copy; InnoNexus Portal. Built for high-impact ideation.</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" onclick="switchTab('challenges')" class="hover:text-brand-600">Challenges</a>
+                <a href="javascript:void(0)" onclick="switchTab('organizations')" class="hover:text-brand-600">Criteria</a>
+                <a href="javascript:void(0)" onclick="switchTab('leaderboard')" class="hover:text-brand-600">Results</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- MODALS & OVERLAYS                          -->
+    <!-- ========================================== -->
+
+    <!-- Modal 1: Participant Sign Up Modal -->
+    <div id="participantSignupModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 modal-blur hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeModal('participantSignupModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-left space-y-2 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-brand-600 flex items-center justify-center">
+                    <i class="fa-solid fa-user-plus text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">Participant Registration</h3>
+                <p class="text-xs text-slate-500">Sign up to submit breakthrough ideas, pitch prototypes, and track evaluations.</p>
+            </div>
+            <form onsubmit="handleParticipantSignUp(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="partName" required placeholder="e.g. Dr. Jordan Rivera" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="partEmail" required placeholder="jordan@innovatelab.org" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Affiliation / Team / University</label>
+                    <input type="text" id="partAffiliation" required placeholder="Apex BioDesign / MIT" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Primary Innovation Domain</label>
+                    <select id="partDomain" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                        <option>CleanTech & Climate</option>
+                        <option>Smart Agri & Food</option>
+                        <option>HealthTech & AI</option>
+                        <option>Robotics & Automation</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl transition">
+                        Complete Registration & Switch to Participant
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Organization Registration Modal -->
+    <div id="orgRegisterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 modal-blur hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('orgRegisterModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-left space-y-2 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <i class="fa-solid fa-building-circle-arrow-right text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">Register Your Organisation</h3>
+                <p class="text-xs text-slate-500">Host innovation challenges, define your 100-point evaluation criteria in your bio, and evaluate submissions.</p>
+            </div>
+            <form onsubmit="handleOrgRegister(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Organisation Name</label>
+                    <input type="text" id="newOrgName" required placeholder="e.g. BlueHorizon Earth Fund" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Focus Domain</label>
+                    <input type="text" id="newOrgDomain" required placeholder="e.g. Sustainable Materials & Ocean Ecosystems" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Organisation Bio & Mission</label>
+                    <textarea id="newOrgBio" rows="2" required placeholder="Describe what challenges your organisation solves and what ideas you seek..." class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-800 mb-1">Published 4-Pillar Evaluation Criteria (Explicit in Bio)</label>
+                    <p class="text-[10px] text-slate-500 mb-2">Each category will be scored 1 to 25 during proposal review.</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <input type="text" id="crit1" value="Technical Feasibility (25%)" class="p-1.5 border rounded-lg text-[11px]" required>
+                        <input type="text" id="crit2" value="Innovation & Novelty (25%)" class="p-1.5 border rounded-lg text-[11px]" required>
+                        <input type="text" id="crit3" value="Scalability & Impact (25%)" class="p-1.5 border rounded-lg text-[11px]" required>
+                        <input type="text" id="crit4" value="Prototype & Readiness (25%)" class="p-1.5 border rounded-lg text-[11px]" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Official Website / Portal</label>
+                    <input type="url" id="newOrgWebsite" required placeholder="https://bluehorizon.org" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl transition">
+                        Register Organisation & Switch Role
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Create Challenge Modal (Orgs only) -->
+    <div id="createChallengeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 modal-blur hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('createChallengeModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-left space-y-1 mb-4">
+                <span class="text-xs font-bold text-brand-600 uppercase">Host An Innovation Sprint</span>
+                <h3 class="text-xl font-bold text-slate-900">Post a Problem Statement</h3>
+                <p class="text-xs text-slate-500">Define the core real-world issue for which your organization invites solutions.</p>
+            </div>
+            <form onsubmit="handleCreateChallenge(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Posting Organisation</label>
+                    <select id="chalOrgSelect" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                        <!-- Populated with registered orgs -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Challenge / Problem Statement Title</label>
+                    <input type="text" id="chalTitle" required placeholder="e.g. Real-Time Autonomous Wildfire Detection Network" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Domain Category</label>
+                        <select id="chalDomain" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                            <option>CleanTech & Climate</option>
+                            <option>Smart Agri & Food</option>
+                            <option>HealthTech & AI</option>
+                            <option>Urban Infrastructure</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Grant / Prize Pool</label>
+                        <input type="text" id="chalPrize" required placeholder="$50,000 + Pilot Grant" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Detailed Problem Description & Scope</label>
+                    <textarea id="chalDesc" rows="3" required placeholder="Explain background, current technical bottleneck, and what expected proof-of-concept must demonstrate..." class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Submission Deadline</label>
+                        <input type="date" id="chalDeadline" required class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Expected Deliverables</label>
+                        <input type="text" id="chalDeliverables" required placeholder="Video Pitch + Live Demo + Deck" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl transition">
+                        Publish Challenge to Portal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Proposal Evaluation Scoring Sheet Modal (For Evaluators) -->
+    <div id="evalScoringModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 modal-blur hidden">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 relative max-h-[92vh] overflow-y-auto">
+            <button onclick="closeModal('evalScoringModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="border-b border-slate-100 pb-3 mb-4">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Official Scoring Sheet</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-1" id="evalModalPropTitle">Evaluation Sheet</h3>
+                <p class="text-xs text-slate-500" id="evalModalSubHeader">Submitted by Team</p>
+            </div>
+
+            <!-- Proposal Reference Data -->
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2 mb-4">
+                <p class="font-medium text-slate-700" id="evalModalSummary">Executive Summary</p>
+                <div class="flex flex-wrap gap-2 pt-1" id="evalModalLinks">
+                    <!-- Links populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Scoring Form According to 4 Criteria -->
+            <form onsubmit="handleEvaluationSubmit(event)" class="space-y-4">
+                <input type="hidden" id="evalModalProposalId">
+                <p class="text-xs font-bold text-slate-800">Scoring Rubrics (Evaluated on standard 100-point scale):</p>
+
+                <!-- Criterion 1 -->
+                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-700" id="critLabel1">Technical Feasibility</label>
+                        <span class="font-bold text-brand-600"><span id="valCrit1">20</span> / 25</span>
+                    </div>
+                    <input type="range" id="scoreCrit1" min="1" max="25" value="20" oninput="updateLiveTotal()" class="w-full accent-indigo-600">
+                    <p class="text-[10px] text-slate-400">Architecture soundness, engineering viability, implementation realism.</p>
+                </div>
+
+                <!-- Criterion 2 -->
+                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-700" id="critLabel2">Innovation & Novelty</label>
+                        <span class="font-bold text-brand-600"><span id="valCrit2">22</span> / 25</span>
+                    </div>
+                    <input type="range" id="scoreCrit2" min="1" max="25" value="22" oninput="updateLiveTotal()" class="w-full accent-indigo-600">
+                    <p class="text-[10px] text-slate-400">Creativity, patentability, departure from legacy methods.</p>
+                </div>
+
+                <!-- Criterion 3 -->
+                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-700" id="critLabel3">Scalability & Impact</label>
+                        <span class="font-bold text-brand-600"><span id="valCrit3">19</span> / 25</span>
+                    </div>
+                    <input type="range" id="scoreCrit3" min="1" max="25" value="19" oninput="updateLiveTotal()" class="w-full accent-indigo-600">
+                    <p class="text-[10px] text-slate-400">Total addressable benefit, commercial viability, deployment potential.</p>
+                </div>
+
+                <!-- Criterion 4 -->
+                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-700" id="critLabel4">Prototype & Presentation</label>
+                        <span class="font-bold text-brand-600"><span id="valCrit4">21</span> / 25</span>
+                    </div>
+                    <input type="range" id="scoreCrit4" min="1" max="25" value="21" oninput="updateLiveTotal()" class="w-full accent-indigo-600">
+                    <p class="text-[10px] text-slate-400">Quality of video demonstration, live prototype accessibility, documentation.</p>
+                </div>
+
+                <!-- Total Score Callout -->
+                <div class="flex justify-between items-center p-3 bg-indigo-50 border border-indigo-200 rounded-xl">
+                    <span class="text-xs font-bold text-indigo-900">Computed Composite Score:</span>
+                    <span class="text-xl font-extrabold text-brand-600"><span id="totalLiveScore">82</span> / 100</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Evaluator Official Comments & Feedback</label>
+                    <textarea id="evalComments" rows="2" required placeholder="Provide concrete justification and actionable feedback for the team..." class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Proclamation & Status Assignment</label>
+                    <select id="evalStatusSelect" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none font-semibold">
+                        <option value="Reviewed">Reviewed (Evaluated)</option>
+                        <option value="Finalist">Promote to Shortlisted Finalist 🌟</option>
+                        <option value="Winner">Award as Grand Winner 🏆</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex space-x-2">
+                    <button type="button" onclick="closeModal('evalScoringModal')" class="w-1/3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-2/3 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl transition shadow">
+                        Finalize Score & Publish Result
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Post Bulletin Notice Modal -->
+    <div id="postNoticeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 modal-blur hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeModal('postNoticeModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-left space-y-1 mb-4">
+                <span class="text-xs font-bold text-indigo-600 uppercase">System Notice Board</span>
+                <h3 class="text-xl font-bold text-slate-900">Post an Announcement</h3>
+                <p class="text-xs text-slate-500">Publish stage updates, shortlist reveals, or webinar dates to participants.</p>
+            </div>
+            <form onsubmit="handlePostAnnouncement(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Announcement Title</label>
+                    <input type="text" id="noticeTitle" required placeholder="e.g. Top 5 Finalists Selected for CleanTech Challenge" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Category Tag</label>
+                    <select id="noticeTag" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                        <option value="Finalists">Finalists Proclamation</option>
+                        <option value="Winner">Winner Proclamation</option>
+                        <option value="Milestone">Milestone & Deadline</option>
+                        <option value="Update">General Platform Update</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Author / Organisation</label>
+                    <input type="text" id="noticeAuthor" required placeholder="e.g. Global Clean Ocean Alliance Jury" class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Announcement Details</label>
+                    <textarea id="noticeBody" rows="3" required placeholder="Write the announcement content here..." class="w-full text-xs rounded-xl border border-slate-300 p-2.5 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-2.5 bg-indigo-900 hover:bg-indigo-800 text-white font-semibold text-xs rounded-xl transition">
+                        Broadcast Announcement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Popup -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center space-x-3 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-medium">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMsg">Action completed successfully!</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT APPLICATION LOGIC               -->
+    <!-- ========================================== -->
+    <script>
+        // Storage Keys
+        const STORAGE_KEY_ORGS = 'inno_orgs_v2';
+        const STORAGE_KEY_CHALLENGES = 'inno_challenges_v2';
+        const STORAGE_KEY_PROPOSALS = 'inno_proposals_v2';
+        const STORAGE_KEY_NOTICES = 'inno_notices_v2';
+
+        // Current Application State
+        let currentRole = 'participant'; // 'participant' | 'organization' | 'guest'
+        let currentUser = {
+            name: 'Aria Chen',
+            org: 'GreenNova Labs',
+            email: 'aria@greennova.io'
+        };
+
+        // Initial Seed Datasets
+        const SEED_ORGANIZATIONS = [
+            {
+                id: 'ORG-1',
+                name: 'Global Clean Ocean Alliance',
+                focus: 'CleanTech & Climate',
+                website: 'https://cleanocean-innovation.org',
+                bio: 'A worldwide syndicate of oceanographic institutes and venture philanthropy funds accelerating microplastic capture and maritime carbon neutrality.',
+                criteria: [
+                    { name: 'Microplastic Capture Efficiency', weight: 25 },
+                    { name: 'Marine Eco-Safety & Novelty', weight: 25 },
+                    { name: 'Open Sea Scalability', weight: 25 },
+                    { name: 'Prototype Clarity & Video Proof', weight: 25 }
+                ]
+            },
+            {
+                id: 'ORG-2',
+                name: 'AgriFuture Foundation',
+                focus: 'Smart Agri & Food',
+                website: 'https://agrifuture-global.org',
+                bio: 'Promoting regenerative agriculture, smallholder climate resilience, and edge AI for crop disease detection across drought-affected geographies.',
+                criteria: [
+                    { name: 'Smallholder Cost Viability', weight: 25 },
+                    { name: 'AI Model Accuracy & Novelty', weight: 25 },
+                    { name: 'Water & Yield Impact', weight: 25 },
+                    { name: 'Field Testing Demonstration', weight: 25 }
+                ]
+            },
+            {
+                id: 'ORG-3',
+                name: 'NextGen MedTech Venture Hub',
+                focus: 'HealthTech & AI',
+                website: 'https://nextgenmedtech.io',
+                bio: 'Accelerating non-invasive diagnostics and decentralised healthcare tools using multimodal foundation models and edge telemetry.',
+                criteria: [
+                    { name: 'Clinical Efficacy & Precision', weight: 25 },
+                    { name: 'Algorithmic Novelty & IP', weight: 25 },
+                    { name: 'Regulatory & Global Scale', weight: 25 },
+                    { name: 'Interactive Demo & Usability', weight: 25 }
+                ]
+            }
+        ];
+
+        const SEED_CHALLENGES = [
+            {
+                id: 'C1',
+                orgId: 'ORG-1',
+                orgName: 'Global Clean Ocean Alliance',
+                title: 'Autonomous Riverine Microplastic Interceptor Array',
+                domain: 'CleanTech & Climate',
+                prize: '$75,000 Grant + Pilot Deployment',
+                deadline: '2026-12-15',
+                deliverables: 'Architecture Deck, Video Pitch & Prototype Repo',
+                description: 'Design a self-powered floating boom or robotic barrier to extract microplastics (<5mm) and urban debris at river mouths prior to ocean dispersal, without harming riverine biodiversity.'
+            },
+            {
+                id: 'C2',
+                orgId: 'ORG-2',
+                orgName: 'AgriFuture Foundation',
+                title: 'Zero-Hardware Smartphone Diagnostic for Crop Pathogens',
+                domain: 'Smart Agri & Food',
+                prize: '$50,000 + Global Deployment Pilot',
+                deadline: '2026-11-30',
+                deliverables: 'Mobile Web Prototype, Pitch Video & Research Whitepaper',
+                description: 'Develop an offline-first computer vision model operable on budget smartphones that detects early-stage viral leaf blight and rust in wheat/cassava with >92% accuracy.'
+            },
+            {
+                id: 'C3',
+                orgId: 'ORG-3',
+                orgName: 'NextGen MedTech Venture Hub',
+                title: 'Edge AI Acoustic Cough Biomarker for Respiratory Distress',
+                domain: 'HealthTech & AI',
+                prize: '$100,000 Seed Equity / Grant',
+                deadline: '2027-01-20',
+                deliverables: 'Functional Web Sandbox, Technical Paper & Pitch',
+                description: 'Create an edge audio signal processing pipeline to detect asthma, COPD, and pediatric pneumonia through ambient sound signatures recorded on standard microphone inputs.'
+            }
+        ];
+
+        const SEED_PROPOSALS = [
+            {
+                id: 'P-101',
+                challengeId: 'C1',
+                challengeTitle: 'Autonomous Riverine Microplastic Interceptor Array',
+                orgId: 'ORG-1',
+                orgName: 'Global Clean Ocean Alliance',
+                title: 'HydroVortex: Biomimetic Manta Barrier with Acoustic Aggregation',
+                team: 'Oceanix BioDesign',
+                author: 'Aria Chen',
+                summary: 'An autonomous floating acoustic mesh that clusters sub-millimeter particles without trapping fish, powered by tidal waterwheels and solar cells.',
+                videoUrl: 'https://youtube.com/watch?v=sample-hydrovortex',
+                webUrl: 'https://hydrovortex-cleansea.demo',
+                repoUrl: 'https://github.com/oceanix/hydrovortex-firmware',
+                docUrl: 'https://whitepaper.oceanix.io/manta-barrier.pdf',
+                scores: {
+                    c1: 24,
+                    c2: 25,
+                    c3: 23,
+                    c4: 24,
+                    total: 96
+                },
+                status: 'Winner', // 'Pending' | 'Under Evaluation' | 'Reviewed' | 'Finalist' | 'Winner'
+                evaluatorFeedback: 'Exceptional hydrodynamic simulation and field-tested acoustic separation proof. Unmatched ecological safety and energy self-reliance.',
+                submittedAt: '2026-11-01'
+            },
+            {
+                id: 'P-102',
+                challengeId: 'C2',
+                challengeTitle: 'Zero-Hardware Smartphone Diagnostic for Crop Pathogens',
+                orgId: 'ORG-2',
+                orgName: 'AgriFuture Foundation',
+                title: 'PhytoLens: Quantized Edge TFLite Vision for Offline Farmers',
+                team: 'AgriSense Labs',
+                author: 'Kavita Patel',
+                summary: 'A sub-12MB quantized convolutional network that works without cellular connectivity across 40 indigenous languages with audio instructions.',
+                videoUrl: 'https://loom.com/share/phytolens-field-demo',
+                webUrl: 'https://phytolens-ai.app',
+                repoUrl: 'https://github.com/agrisense/phytolens-edge',
+                docUrl: 'https://drive.google.com/phytolens-evaluation.pdf',
+                scores: {
+                    c1: 23,
+                    c2: 22,
+                    c3: 24,
+                    c4: 22,
+                    total: 91
+                },
+                status: 'Finalist',
+                evaluatorFeedback: 'Ultra-lean quantization makes this instantly runnable on $60 Android handsets. Commendable localization for local agricultural cooperatives.',
+                submittedAt: '2026-11-03'
+            },
+            {
+                id: 'P-103',
+                challengeId: 'C3',
+                challengeTitle: 'Edge AI Acoustic Cough Biomarker for Respiratory Distress',
+                orgId: 'ORG-3',
+                orgName: 'NextGen MedTech Venture Hub',
+                title: 'RespiroEcho: Embedded Spectral Cough Transformer',
+                team: 'NeuroPulm Systems',
+                author: 'Dr. Marcus Vance',
+                summary: 'Real-time mel-spectrogram anomaly transformer running on browser WebAssembly, offering instant triaging for pediatric pulmonary distress.',
+                videoUrl: 'https://vimeo.com/respirocough-demo',
+                webUrl: 'https://respiroecho-sandbox.med',
+                repoUrl: 'https://github.com/neuropulm/respiro-transformer',
+                docUrl: 'https://arxiv.org/abs/sample-respiro-biomarker',
+                scores: {
+                    c1: 22,
+                    c2: 24,
+                    c3: 21,
+                    c4: 21,
+                    total: 88
+                },
+                status: 'Finalist',
+                evaluatorFeedback: 'High clinical correlation in clinical validation datasets with zero latency latency on mobile browsers. Regulatory pathway documented thoroughly.',
+                submittedAt: '2026-11-04'
+            },
+            {
+                id: 'P-104',
+                challengeId: 'C1',
+                challengeTitle: 'Autonomous Riverine Microplastic Interceptor Array',
+                orgId: 'ORG-1',
+                orgName: 'Global Clean Ocean Alliance',
+                title: 'AlgaeTrap: Cellulose-Coated Bio-Mesh Flotillas',
+                team: 'BioSurge Collective',
+                author: 'Elena Gomez',
+                summary: 'Biodegradable seaweed polymer filters capable of catching secondary plastic beads while decomposing harmlessly if detached during storms.',
+                videoUrl: 'https://youtube.com/watch?v=algaetrap-pitch',
+                webUrl: 'https://algaetrap.org',
+                repoUrl: 'https://github.com/biosurge/mesh-cad',
+                docUrl: 'https://algaetrap.org/whitepaper.pdf',
+                scores: {
+                    c1: 19,
+                    c2: 21,
+                    c3: 20,
+                    c4: 19,
+                    total: 79
+                },
+                status: 'Reviewed',
+                evaluatorFeedback: 'Innovative biomaterial choice, but durability under torrential flash-flooding conditions requires reinforced structural anchors.',
+                submittedAt: '2026-11-05'
+            },
+            {
+                id: 'P-105',
+                challengeId: 'C2',
+                challengeTitle: 'Zero-Hardware Smartphone Diagnostic for Crop Pathogens',
+                orgId: 'ORG-2',
+                orgName: 'AgriFuture Foundation',
+                title: 'SpectralFarm: Multispectral Flash Diffuser Phone Attachment',
+                team: 'OptiCrop Labs',
+                author: 'Liam O’Connor',
+                summary: 'A 3D-printed $0.50 clip-on lens and flashlight prism turning standard phone cameras into multispectral chlorophyll sensors.',
+                videoUrl: 'https://youtu.be/spectralfarm-clip',
+                webUrl: '',
+                repoUrl: 'https://github.com/opticrop/lens-stl',
+                docUrl: 'https://drive.google.com/opticrop-paper.pdf',
+                scores: null,
+                status: 'Under Evaluation',
+                evaluatorFeedback: '',
+                submittedAt: '2026-11-06'
+            }
+        ];
+
+        const SEED_NOTICES = [
+            {
+                id: 'N-1',
+                title: '🏆 Grand Winner Proclamation: HydroVortex for Ocean CleanTech',
+                category: 'Winner',
+                author: 'Global Clean Ocean Alliance',
+                date: '2026-11-06',
+                content: 'Following in-depth prototype inspection and hydrodynamic safety review, Oceanix BioDesign has secured 1st place with a score of 96/100 for their Biomimetic Manta Barrier!'
+            },
+            {
+                id: 'N-2',
+                title: '🌟 Shortlist Announced for Crop Pathogen Challenge',
+                category: 'Finalists',
+                author: 'AgriFuture Foundation',
+                date: '2026-11-05',
+                content: 'Jury evaluations are in progress. PhytoLens has been awarded Finalist standing for exceptional offline capability on smallholder mobile hardware.'
+            },
+            {
+                id: 'N-3',
+                title: '📢 Milestone: Technical Review Commences for HealthTech AI Sprint',
+                category: 'Milestone',
+                author: 'NextGen MedTech Venture Hub',
+                date: '2026-11-02',
+                content: 'All submitted multi-modal cough acoustic models are undergoing blind algorithmic benchmarking against validation datasets.'
+            }
+        ];
+
+        // Data Helpers
+        function getOrgs() {
+            const data = localStorage.getItem(STORAGE_KEY_ORGS);
+            return data ? JSON.parse(data) : SEED_ORGANIZATIONS;
+        }
+        function saveOrgs(data) {
+            localStorage.setItem(STORAGE_KEY_ORGS, JSON.stringify(data));
+        }
+
+        function getChallenges() {
+            const data = localStorage.getItem(STORAGE_KEY_CHALLENGES);
+            return data ? JSON.parse(data) : SEED_CHALLENGES;
+        }
+        function saveChallenges(data) {
+            localStorage.setItem(STORAGE_KEY_CHALLENGES, JSON.stringify(data));
+        }
+
+        function getProposals() {
+            const data = localStorage.getItem(STORAGE_KEY_PROPOSALS);
+            return data ? JSON.parse(data) : SEED_PROPOSALS;
+        }
+        function saveProposals(data) {
+            localStorage.setItem(STORAGE_KEY_PROPOSALS, JSON.stringify(data));
+        }
+
+        function getNotices() {
+            const data = localStorage.getItem(STORAGE_KEY_NOTICES);
+            return data ? JSON.parse(data) : SEED_NOTICES;
+        }
+        function saveNotices(data) {
+            localStorage.setItem(STORAGE_KEY_NOTICES, JSON.stringify(data));
+        }
+
+        function seedSampleData() {
+            saveOrgs(SEED_ORGANIZATIONS);
+            saveChallenges(SEED_CHALLENGES);
+            saveProposals(SEED_PROPOSALS);
+            saveNotices(SEED_NOTICES);
+            renderAllViews();
+            showToast('System reset with fresh realistic demo data!', 'success');
+        }
+
+        // Navigation Controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const activeSection = document.getElementById('tab-' + tabId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            // Update Header Tab styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'bg-brand-50', 'font-semibold');
+                btn.classList.add('text-slate-600');
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.classList.add('text-brand-600', 'bg-brand-50', 'font-semibold');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            // Trigger targeted renders
+            if (tabId === 'challenges') renderChallenges();
+            if (tabId === 'organizations') renderOrganizations();
+            if (tabId === 'submit') {
+                populateChallengeDropdown();
+                renderMyProposals();
+            }
+            if (tabId === 'evaluations') renderEvaluationDeck();
+            if (tabId === 'leaderboard') renderLeaderboard('all');
+            if (tabId === 'announcements') renderAnnouncements();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Role Switcher Simulation
+        function handleRoleChange(role) {
+            currentRole = role;
+            const badge = document.getElementById('roleBadge');
+            const greeting = document.getElementById('roleGreeting');
+            const heroPostBtn = document.getElementById('heroCreateChallengeBtn');
+
+            if (role === 'participant') {
+                currentUser = { name: 'Aria Chen', org: 'GreenNova Labs', email: 'aria@greennova.io' };
+                badge.className = 'inline-flex items-center px-2 py-0.5 rounded font-semibold text-xs bg-indigo-200 text-indigo-800';
+                badge.textContent = 'Participant Mode';
+                greeting.innerHTML = `Signed in as Innovator: <strong>${currentUser.name}</strong> (${currentUser.org}). Submit multimedia proposals & track results.`;
+                if (heroPostBtn) heroPostBtn.classList.add('opacity-50');
+            } else if (role === 'organization') {
+                currentUser = { name: 'Dr. Helen Vance', org: 'Global Clean Ocean Alliance', email: 'jury@cleanocean.org' };
+                badge.className = 'inline-flex items-center px-2 py-0.5 rounded font-semibold text-xs bg-emerald-200 text-emerald-900';
+                badge.textContent = 'Organisation Evaluator Mode';
+                greeting.innerHTML = `Active Evaluator: <strong>${currentUser.name}</strong> (${currentUser.org}). Review proposals using your 100-point criteria rubric!`;
+                if (heroPostBtn) heroPostBtn.classList.remove('opacity-50');
+            } else {
+                currentUser = null;
+                badge.className = 'inline-flex items-center px-2 py-0.5 rounded font-semibold text-xs bg-slate-200 text-slate-800';
+                badge.textContent = 'Public Guest Mode';
+                greeting.innerHTML = `Browsing as a guest. View open challenges, published scoring rubrics, and the official live leaderboard.`;
+                if (heroPostBtn) heroPostBtn.classList.add('opacity-50');
+            }
+            updateQuickStats();
+        }
+
+        function updateQuickStats() {
+            const challenges = getChallenges();
+            const proposals = getProposals();
+            const stats = document.getElementById('quickStats');
+            if (stats) {
+                stats.textContent = `${challenges.length} Active Challenges | ${proposals.length} Submitted Proposals`;
+            }
+        }
+
+        // ==========================================
+        // 1. CHALLENGES VIEW & FILTERS
+        // ==========================================
+        let activeDomainFilter = 'all';
+
+        function filterChallenges(domain) {
+            activeDomainFilter = domain;
+            document.querySelectorAll('.domain-pill').forEach(btn => {
+                btn.className = 'domain-pill px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200';
+            });
+            event.target.className = 'domain-pill active px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white';
+            renderChallenges();
+        }
+
+        function searchChallenges(term) {
+            renderChallenges(term.toLowerCase());
+        }
+
+        function renderChallenges(query = '') {
+            const container = document.getElementById('challengesGrid');
+            const challenges = getChallenges();
+            const orgs = getOrgs();
+
+            const filtered = challenges.filter(c => {
+                const matchDomain = (activeDomainFilter === 'all' || c.domain === activeDomainFilter);
+                const matchQuery = !query || c.title.toLowerCase().includes(query) || c.description.toLowerCase().includes(query) || c.orgName.toLowerCase().includes(query);
+                return matchDomain && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <h4 class="font-bold text-slate-700">No Challenges Found</h4>
+                        <p class="text-xs text-slate-400">Try choosing a different domain filter or search term.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(c => {
+                // Find organization bio and criteria for quick display
+                const org = orgs.find(o => o.id === c.orgId);
+                const criteriaCount = (org && org.criteria) ? org.criteria.length : 4;
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
+                    <div class="p-6 space-y-3">
+                        <div class="flex justify-between items-start gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-indigo-50 text-brand-700 border border-indigo-100">
+                                <i class="fa-solid fa-tag mr-1 text-[10px]"></i> ${c.domain}
+                            </span>
+                            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
+                                <i class="fa-solid fa-award mr-1"></i> ${c.prize}
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg group-hover:text-brand-600 transition tracking-tight">${c.title}</h3>
+                            <p class="text-xs font-medium text-slate-500 mt-1 flex items-center">
+                                <i class="fa-solid fa-building mr-1.5 text-slate-400"></i> Host: ${c.orgName}
+                            </p>
+                        </div>
+
+                        <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">${c.description}</p>
+
+                        <!-- Organization Bio & Criteria snippet -->
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1.5">
+                            <div class="flex justify-between text-[11px] font-semibold text-slate-700">
+                                <span><i class="fa-solid fa-list-check mr-1 text-indigo-500"></i> Defined Evaluation Rubric:</span>
+                                <span class="text-brand-600">${criteriaCount} Pillars (100 Pts)</span>
+                            </div>
+                            <p class="text-[10px] text-slate-500 line-clamp-1 italic">
+                                "${org ? org.bio : 'Defined transparent scoring framework in organization profile.'}"
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 text-[10px] text-slate-500 pt-1">
+                            <span><i class="fa-solid fa-box-archive mr-1 text-slate-400"></i> Deliverables: ${c.deliverables}</span>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <div class="text-slate-500 font-medium text-[11px]">
+                            <i class="fa-solid fa-calendar-xmark mr-1 text-red-400"></i> Deadline: <strong class="text-slate-700">${c.deadline}</strong>
+                        </div>
+                        <button onclick="prefillSubmission('${c.id}')" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition shadow-sm flex items-center">
+                            Submit Idea <i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Pre-fill submission form and transition to submission portal
+        function prefillSubmission(challengeId) {
+            switchTab('submit');
+            const select = document.getElementById('propChallengeSelect');
+            if (select) {
+                select.value = challengeId;
+            }
+        }
+
+        // ==========================================
+        // 2. ORGANISATIONS & EVALUATION CRITERIA DIRECTORY
+        // ==========================================
+        function renderOrganizations() {
+            const container = document.getElementById('organizationsList');
+            const orgs = getOrgs();
+            const challenges = getChallenges();
+
+            container.innerHTML = orgs.map(org => {
+                const orgChallenges = challenges.filter(c => c.orgId === org.id);
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-5">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-brand-600 font-bold text-xl">
+                                    ${org.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-base leading-snug">${org.name}</h3>
+                                    <span class="text-[11px] font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md inline-block mt-0.5">${org.focus}</span>
+                                </div>
+                            </div>
+                            <a href="${org.website}" target="_blank" class="text-slate-400 hover:text-brand-600 text-xs flex items-center gap-1 font-medium">
+                                <i class="fa-solid fa-globe"></i> Portal
+                            </a>
+                        </div>
+
+                        <!-- Organization Bio -->
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">About & Mission:</span>
+                            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50/60 p-3 rounded-2xl border border-slate-100">
+                                ${org.bio}
+                            </p>
+                        </div>
+
+                        <!-- Published Evaluation Rubric explicitly in Bio -->
+                        <div class="space-y-2">
+                            <span class="text-[11px] font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-scale-balanced mr-1.5 text-indigo-600"></i> Published Evaluation Rubric (100 Pts Total)
+                            </span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                ${org.criteria.map(crit => `
+                                    <div class="bg-indigo-50/50 p-2 rounded-xl border border-indigo-100/60 flex justify-between items-center">
+                                        <span class="font-medium text-slate-700 text-[11px] truncate pr-1">${crit.name}</span>
+                                        <span class="font-bold text-indigo-700 text-[10px] bg-white px-1.5 py-0.5 rounded border border-indigo-200">Max ${crit.weight}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Associated Problem Statements -->
+                        <div class="pt-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                                Active Challenges Hosted (${orgChallenges.length}):
+                            </span>
+                            <div class="space-y-2">
+                                ${orgChallenges.map(c => `
+                                    <div class="flex items-center justify-between text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                        <span class="font-medium text-slate-800 truncate pr-2">${c.title}</span>
+                                        <span class="text-[10px] font-bold text-emerald-600 whitespace-nowrap">${c.prize}</span>
+                                    </div>
+                                `).join('')}
+                                ${orgChallenges.length === 0 ? '<p class="text-xs text-slate-400 italic">No challenges posted currently.</p>' : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="text-slate-400 text-[11px]"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Verified Challenge Host</span>
+                        <button onclick="prefillSubmission('${orgChallenges[0] ? orgChallenges[0].id : ''}')" class="text-brand-600 font-semibold hover:underline flex items-center">
+                            Pitch to this Org &rarr;
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // 3. PROPOSALS SUBMISSION & TRACKER
+        // ==========================================
+        function populateChallengeDropdown() {
+            const select = document.getElementById('propChallengeSelect');
+            const challenges = getChallenges();
+            select.innerHTML = '<option value="">-- Choose a Challenge Statement --</option>' +
+                challenges.map(c => `<option value="${c.id}">${c.title} (${c.orgName})</option>`).join('');
+
+            // Also populate the modal challenge dropdown for orgs
+            const chalOrgSelect = document.getElementById('chalOrgSelect');
+            if (chalOrgSelect) {
+                const orgs = getOrgs();
+                chalOrgSelect.innerHTML = orgs.map(o => `<option value="${o.id}">${o.name}</option>`).join('');
+            }
+
+            // Also update evaluation filter dropdown
+            const evalFilter = document.getElementById('evalChallengeFilter');
+            if (evalFilter) {
+                evalFilter.innerHTML = '<option value="all">All Challenges</option>' +
+                    challenges.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+            }
+        }
+
+        function handleProposalSubmit(e) {
+            e.preventDefault();
+            const challengeId = document.getElementById('propChallengeSelect').value;
+            const title = document.getElementById('propTitle').value.trim();
+            const team = document.getElementById('propTeam').value.trim();
+            const summary = document.getElementById('propSummary').value.trim();
+            const videoUrl = document.getElementById('propVideoUrl').value.trim();
+            const webUrl = document.getElementById('propWebUrl').value.trim();
+            const repoUrl = document.getElementById('propRepoUrl').value.trim();
+            const docUrl = document.getElementById('propDocUrl').value.trim();
+
+            if (!challengeId) {
+                showToast('Please select an active innovation challenge!', 'error');
+                return;
+            }
+
+            const challenges = getChallenges();
+            const challenge = challenges.find(c => c.id === challengeId);
+
+            const newProp = {
+                id: 'P-' + Math.floor(100 + Math.random() * 900),
+                challengeId: challenge.id,
+                challengeTitle: challenge.title,
+                orgId: challenge.orgId,
+                orgName: challenge.orgName,
+                title: title,
+                team: team,
+                author: currentUser ? currentUser.name : team,
+                summary: summary,
+                videoUrl: videoUrl,
+                webUrl: webUrl,
+                repoUrl: repoUrl,
+                docUrl: docUrl,
+                scores: null,
+                status: 'Under Evaluation',
+                evaluatorFeedback: '',
+                submittedAt: new Date().toISOString().split('T')[0]
+            };
+
+            const proposals = getProposals();
+            proposals.unshift(newProp);
+            saveProposals(proposals);
+
+            // Post automated notice
+            const notices = getNotices();
+            notices.unshift({
+                id: 'N-' + Date.now(),
+                title: `New Proposal Submitted: "${title}"`,
+                category: 'Update',
+                author: challenge.orgName,
+                date: new Date().toISOString().split('T')[0],
+                content: `Team ${team} has submitted a new multi-format innovation proposal for "${challenge.title}". Undergoing preliminary jury verification.`
+            });
+            saveNotices(notices);
+
+            document.getElementById('proposalForm').reset();
+            renderMyProposals();
+            updateQuickStats();
+            showToast('Innovation proposal submitted successfully! Evaluators have been notified.', 'success');
+        }
+
+        function renderMyProposals() {
+            const container = document.getElementById('myProposalsList');
+            const countLabel = document.getElementById('mySubmissionsCount');
+            const proposals = getProposals();
+
+            // Filter for current user's team or proposals
+            const myProps = proposals.filter(p => p.author === (currentUser ? currentUser.name : 'Aria Chen') || p.team === 'Oceanix BioDesign' || currentRole === 'organization');
+
+            countLabel.textContent = `${myProps.length} Proposals`;
+
+            if (myProps.length === 0) {
+                container.innerHTML = `
+                    <div class="py-8 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-300"></i>
+                        <p class="text-xs">No submitted proposals yet under this profile.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = myProps.map(p => {
+                let badgeClass = 'bg-amber-100 text-amber-800';
+                if (p.status === 'Winner') badgeClass = 'badge-winner';
+                else if (p.status === 'Finalist') badgeClass = 'badge-finalist';
+                else if (p.status === 'Reviewed') badgeClass = 'bg-blue-100 text-blue-800';
+                else badgeClass = 'bg-slate-100 text-slate-700';
+
+                return `
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 hover:bg-indigo-50/20 transition">
+                    <div class="flex justify-between items-start gap-2">
+                        <h4 class="font-bold text-slate-900 text-xs leading-tight">${p.title}</h4>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">${p.status}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 truncate"><i class="fa-solid fa-bullseye mr-1 text-indigo-400"></i> ${p.challengeTitle}</p>
+                    
+                    <div class="flex items-center justify-between pt-1 text-[11px]">
+                        <span class="text-slate-600 font-semibold">
+                            ${p.scores ? `Score: <span class="text-brand-600 font-bold">${p.scores.total}/100</span>` : '<span class="text-slate-400 italic">Score Pending Review</span>'}
+                        </span>
+                        <div class="flex space-x-2 text-slate-500">
+                            ${p.videoUrl ? `<a href="${p.videoUrl}" target="_blank" title="Video Pitch" class="hover:text-red-500"><i class="fa-brands fa-youtube"></i></a>` : ''}
+                            ${p.webUrl ? `<a href="${p.webUrl}" target="_blank" title="Live Website" class="hover:text-blue-500"><i class="fa-solid fa-globe"></i></a>` : ''}
+                            ${p.repoUrl ? `<a href="${p.repoUrl}" target="_blank" title="Repository" class="hover:text-slate-800"><i class="fa-brands fa-github"></i></a>` : ''}
+                            ${p.docUrl ? `<a href="${p.docUrl}" target="_blank" title="Document" class="hover:text-red-600"><i class="fa-solid fa-file-pdf"></i></a>` : ''}
+                        </div>
+                    </div>
+
+                    ${p.evaluatorFeedback ? `
+                        <div class="mt-2 p-2 bg-white rounded-xl border border-indigo-100 text-[10px] text-slate-600">
+                            <span class="font-bold text-brand-700"><i class="fa-solid fa-comment-dots mr-1"></i> Jury Feedback:</span> "${p.evaluatorFeedback}"
+                        </div>
+                    ` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // 4. EVALUATION & SCORING PORTAL
+        // ==========================================
+        function renderEvaluationDeck() {
+            const container = document.getElementById('evaluationsDeck');
+            const proposals = getProposals();
+            const orgs = getOrgs();
+            const filterChallenge = document.getElementById('evalChallengeFilter')?.value || 'all';
+
+            const filtered = proposals.filter(p => filterChallenge === 'all' || p.challengeId === filterChallenge);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-circle-check text-4xl text-emerald-400 mb-3"></i>
+                        <h4 class="font-bold text-slate-700">All Caught Up!</h4>
+                        <p class="text-xs text-slate-400">No proposals awaiting evaluation under the selected filter.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(p => {
+                const org = orgs.find(o => o.id === p.orgId);
+                const hasScore = !!p.scores;
+                const scoreDisplay = hasScore ? `${p.scores.total} / 100` : 'Not Scored Yet';
+
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4 hover:border-indigo-200 transition">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-brand-600 uppercase tracking-widest bg-brand-50 px-2 py-0.5 rounded">ID: ${p.id}</span>
+                            <h3 class="text-lg font-bold text-slate-900 mt-1">${p.title}</h3>
+                            <p class="text-xs text-slate-500">By <strong>${p.team}</strong> (Lead: ${p.author}) &bull; Submitted: ${p.submittedAt}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${p.status === 'Winner' ? 'badge-winner' : p.status === 'Finalist' ? 'badge-finalist' : 'bg-slate-100 text-slate-700'}">
+                                ${p.status}
+                            </span>
+                            <span class="text-xs font-extrabold px-3 py-1 bg-indigo-50 border border-indigo-100 text-brand-700 rounded-lg">
+                                ${scoreDisplay}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Problem statement alignment -->
+                    <div class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-2">
+                        <div class="flex items-center justify-between font-medium">
+                            <span class="text-slate-700"><i class="fa-solid fa-bullseye text-indigo-500 mr-1.5"></i> Challenge: <strong>${p.challengeTitle}</strong></span>
+                            <span class="text-slate-400 text-[11px]">Host: ${p.orgName}</span>
+                        </div>
+                        <p class="leading-relaxed text-slate-600">${p.summary}</p>
+                    </div>
+
+                    <!-- Attached Pitch Formats -->
+                    <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                        <span class="text-[11px] font-bold text-slate-400 mr-1 uppercase">Pitch Artifacts:</span>
+                        ${p.videoUrl ? `
+                            <a href="${p.videoUrl}" target="_blank" class="px-2.5 py-1 bg-red-50 text-red-700 border border-red-200 rounded-lg font-medium hover:bg-red-100 transition flex items-center">
+                                <i class="fa-brands fa-youtube mr-1.5"></i> Pitch Video
+                            </a>` : ''}
+                        ${p.webUrl ? `
+                            <a href="${p.webUrl}" target="_blank" class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-medium hover:bg-blue-100 transition flex items-center">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> Live Prototype
+                            </a>` : ''}
+                        ${p.repoUrl ? `
+                            <a href="${p.repoUrl}" target="_blank" class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-200 rounded-lg font-medium hover:bg-slate-200 transition flex items-center">
+                                <i class="fa-brands fa-github mr-1.5"></i> Repository
+                            </a>` : ''}
+                        ${p.docUrl ? `
+                            <a href="${p.docUrl}" target="_blank" class="px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg font-medium hover:bg-amber-100 transition flex items-center">
+                                <i class="fa-solid fa-file-lines mr-1.5"></i> Technical Whitepaper
+                            </a>` : ''}
+                    </div>
+
+                    ${p.evaluatorFeedback ? `
+                        <div class="bg-indigo-50/60 p-3 rounded-2xl border border-indigo-100 text-xs">
+                            <span class="font-bold text-brand-700 block mb-0.5"><i class="fa-solid fa-gavel mr-1"></i> Recorded Jury Remarks:</span>
+                            <p class="text-slate-600 italic">"${p.evaluatorFeedback}"</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="flex justify-end pt-2">
+                        <button onclick="openEvaluationModal('${p.id}')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs rounded-xl transition shadow flex items-center">
+                            <i class="fa-solid fa-pen-ruler mr-2"></i> ${hasScore ? 'Revise Official Score & Status' : 'Grade Against Criteria'}
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function openEvaluationModal(proposalId) {
+            const proposals = getProposals();
+            const prop = proposals.find(p => p.id === proposalId);
+            if (!prop) return;
+
+            const orgs = getOrgs();
+            const org = orgs.find(o => o.id === prop.orgId);
+
+            document.getElementById('evalModalProposalId').value = prop.id;
+            document.getElementById('evalModalPropTitle').textContent = prop.title;
+            document.getElementById('evalModalSubHeader').textContent = `Submitted by ${prop.team} for "${prop.challengeTitle}"`;
+            document.getElementById('evalModalSummary').textContent = prop.summary;
+
+            // Set Criteria labels according to the specific Organization's Bio criteria!
+            if (org && org.criteria) {
+                document.getElementById('critLabel1').textContent = org.criteria[0]?.name || 'Feasibility & Engineering';
+                document.getElementById('critLabel2').textContent = org.criteria[1]?.name || 'Innovation & Novelty';
+                document.getElementById('critLabel3').textContent = org.criteria[2]?.name || 'Scalability & Market Viability';
+                document.getElementById('critLabel4').textContent = org.criteria[3]?.name || 'Prototype & Usability';
+            }
+
+            // Set default or existing values
+            const sc = prop.scores || { c1: 20, c2: 20, c3: 20, c4: 20 };
+            document.getElementById('scoreCrit1').value = sc.c1;
+            document.getElementById('scoreCrit2').value = sc.c2;
+            document.getElementById('scoreCrit3').value = sc.c3;
+            document.getElementById('scoreCrit4').value = sc.c4;
+            document.getElementById('evalComments').value = prop.evaluatorFeedback || '';
+            document.getElementById('evalStatusSelect').value = prop.status === 'Winner' ? 'Winner' : (prop.status === 'Finalist' ? 'Finalist' : 'Reviewed');
+
+            updateLiveTotal();
+
+            // Populate pitch links in modal
+            const linksContainer = document.getElementById('evalModalLinks');
+            linksContainer.innerHTML = `
+                ${prop.videoUrl ? `<a href="${prop.videoUrl}" target="_blank" class="text-[11px] text-red-600 hover:underline"><i class="fa-brands fa-youtube mr-1"></i>Pitch Video</a>` : ''}
+                ${prop.webUrl ? `<a href="${prop.webUrl}" target="_blank" class="text-[11px] text-blue-600 hover:underline"><i class="fa-solid fa-globe mr-1"></i>Live Site</a>` : ''}
+                ${prop.repoUrl ? `<a href="${prop.repoUrl}" target="_blank" class="text-[11px] text-slate-700 hover:underline"><i class="fa-brands fa-github mr-1"></i>Code Repo</a>` : ''}
+                ${prop.docUrl ? `<a href="${prop.docUrl}" target="_blank" class="text-[11px] text-amber-700 hover:underline"><i class="fa-solid fa-file-pdf mr-1"></i>Whitepaper</a>` : ''}
+            `;
+
+            openModal('evalScoringModal');
+        }
+
+        function updateLiveTotal() {
+            const c1 = parseInt(document.getElementById('scoreCrit1').value) || 0;
+            const c2 = parseInt(document.getElementById('scoreCrit2').value) || 0;
+            const c3 = parseInt(document.getElementById('scoreCrit3').value) || 0;
+            const c4 = parseInt(document.getElementById('scoreCrit4').value) || 0;
+
+            document.getElementById('valCrit1').textContent = c1;
+            document.getElementById('valCrit2').textContent = c2;
+            document.getElementById('valCrit3').textContent = c3;
+            document.getElementById('valCrit4').textContent = c4;
+
+            const total = c1 + c2 + c3 + c4;
+            document.getElementById('totalLiveScore').textContent = total;
+        }
+
+        function handleEvaluationSubmit(e) {
+            e.preventDefault();
+            const proposalId = document.getElementById('evalModalProposalId').value;
+            const c1 = parseInt(document.getElementById('scoreCrit1').value) || 0;
+            const c2 = parseInt(document.getElementById('scoreCrit2').value) || 0;
+            const c3 = parseInt(document.getElementById('scoreCrit3').value) || 0;
+            const c4 = parseInt(document.getElementById('scoreCrit4').value) || 0;
+            const total = c1 + c2 + c3 + c4;
+            const comments = document.getElementById('evalComments').value.trim();
+            const newStatus = document.getElementById('evalStatusSelect').value;
+
+            const proposals = getProposals();
+            const propIndex = proposals.findIndex(p => p.id === proposalId);
+
+            if (propIndex === -1) return;
+
+            proposals[propIndex].scores = { c1, c2, c3, c4, total };
+            proposals[propIndex].evaluatorFeedback = comments;
+            proposals[propIndex].status = newStatus;
+            saveProposals(proposals);
+
+            // If winner or finalist promoted, automatically post to Announcements board
+            if (newStatus === 'Winner' || newStatus === 'Finalist') {
+                const notices = getNotices();
+                notices.unshift({
+                    id: 'N-' + Date.now(),
+                    title: `${newStatus === 'Winner' ? '🏆 Winner Proclamation' : '🌟 Finalist Selection'}: ${proposals[propIndex].title}`,
+                    category: newStatus,
+                    author: proposals[propIndex].orgName,
+                    date: new Date().toISOString().split('T')[0],
+                    content: `Host organisation has officially assigned ${newStatus} standing to Team ${proposals[propIndex].team} with an aggregate jury score of ${total}/100. Feedback: "${comments}"`
+                });
+                saveNotices(notices);
+            }
+
+            closeModal('evalScoringModal');
+            renderEvaluationDeck();
+            renderMyProposals();
+            renderLeaderboard('all');
+            showToast(`Evaluation published! Composite Score: ${total}/100`, 'success');
+        }
+
+        // ==========================================
+        // 5. PUBLIC LEADERBOARD & RESULTS
+        // ==========================================
+        let currentLeaderboardFilter = 'all';
+
+        function renderLeaderboard(challengeFilter = 'all') {
+            currentLeaderboardFilter = challengeFilter;
+
+            // Highlight button filter
+            document.querySelectorAll('.lb-filter-btn').forEach(btn => {
+                btn.className = 'lb-filter-btn px-4 py-2 rounded-lg text-slate-600 hover:text-brand-600 font-semibold';
+            });
+            const activeBtn = document.getElementById('lb-filter-' + challengeFilter);
+            if (activeBtn) {
+                activeBtn.className = 'lb-filter-btn px-4 py-2 rounded-lg bg-brand-600 text-white font-semibold shadow-sm';
+            }
+
+            const proposals = getProposals();
+            // Filter evaluated proposals
+            let evaluated = proposals.filter(p => p.scores !== null);
+
+            if (challengeFilter !== 'all') {
+                evaluated = evaluated.filter(p => p.challengeId === challengeFilter);
+            }
+
+            // Sort descending by total score
+            evaluated.sort((a, b) => b.scores.total - a.scores.total);
+
+            document.getElementById('totalReviewedCount').textContent = evaluated.length;
+
+            // Render Podium (Top 3)
+            renderPodium(evaluated.slice(0, 3));
+
+            // Render Table
+            const tbody = document.getElementById('leaderboardTableBody');
+            if (evaluated.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-400">
+                            No scored proposals in this challenge category yet.
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = evaluated.map((p, idx) => {
+                const rank = idx + 1;
+                let rankBadge = `<span class="font-bold text-slate-600">#${rank}</span>`;
+                if (rank === 1) rankBadge = `<span class="w-6 h-6 rounded-full bg-amber-400 text-white font-extrabold flex items-center justify-center text-xs shadow-sm"><i class="fa-solid fa-crown text-[10px]"></i></span>`;
+                else if (rank === 2) rankBadge = `<span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 font-extrabold flex items-center justify-center text-xs shadow-sm">2</span>`;
+                else if (rank === 3) rankBadge = `<span class="w-6 h-6 rounded-full bg-amber-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">3</span>`;
+
+                let statusBadge = '<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Reviewed</span>';
+                if (p.status === 'Winner') statusBadge = '<span class="text-xs badge-winner font-bold px-2 py-0.5 rounded-full">🏆 Grand Winner</span>';
+                else if (p.status === 'Finalist') statusBadge = '<span class="text-xs badge-finalist font-bold px-2 py-0.5 rounded-full">🌟 Finalist</span>';
+
+                return `
+                <tr class="hover:bg-slate-50/70 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">${rankBadge}</td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900">${p.title}</div>
+                        <div class="text-[11px] text-slate-500 line-clamp-1">${p.summary}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-slate-700 font-medium">${p.challengeTitle}</div>
+                        <div class="text-[10px] text-slate-400">Host: ${p.orgName}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-semibold text-slate-800">${p.team}</div>
+                        <div class="text-[11px] text-slate-400">${p.author}</div>
+                    </td>
+                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                        <span class="inline-block px-2.5 py-1 bg-indigo-50 text-brand-700 font-extrabold rounded-lg text-sm border border-indigo-100">
+                            ${p.scores.total}
+                        </span>
+                        <div class="text-[10px] text-slate-400 mt-0.5">/ 100 max</div>
+                    </td>
+                    <td class="px-6 py-4 text-center whitespace-nowrap">${statusBadge}</td>
+                    <td class="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                        ${p.videoUrl ? `<a href="${p.videoUrl}" target="_blank" title="Watch Video Pitch" class="text-red-500 hover:text-red-700"><i class="fa-brands fa-youtube"></i></a>` : ''}
+                        ${p.webUrl ? `<a href="${p.webUrl}" target="_blank" title="Live Prototype" class="text-blue-500 hover:text-blue-700"><i class="fa-solid fa-globe"></i></a>` : ''}
+                        ${p.repoUrl ? `<a href="${p.repoUrl}" target="_blank" title="Source Repo" class="text-slate-700 hover:text-slate-900"><i class="fa-brands fa-github"></i></a>` : ''}
+                        ${p.docUrl ? `<a href="${p.docUrl}" target="_blank" title="Technical Document" class="text-amber-600 hover:text-amber-800"><i class="fa-solid fa-file-pdf"></i></a>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderPodium(topThree) {
+            const container = document.getElementById('podiumContainer');
+            if (topThree.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = topThree.map((p, idx) => {
+                const rankNum = idx + 1;
+                const borderStyles = rankNum === 1 ? 'border-amber-300 bg-gradient-to-b from-amber-50 to-white ring-2 ring-amber-400/30' : 'border-slate-200 bg-white';
+                const medalIcon = rankNum === 1 ? 'fa-crown text-amber-500' : (rankNum === 2 ? 'fa-medal text-slate-400' : 'fa-award text-amber-700');
+
+                return `
+                <div class="rounded-3xl border ${borderStyles} p-5 shadow-sm text-center flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-lg mb-2 shadow-inner">
+                            <i class="fa-solid ${medalIcon}"></i>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Rank #${rankNum}</span>
+                        <h4 class="font-bold text-slate-900 text-sm mt-0.5 line-clamp-1">${p.title}</h4>
+                        <p class="text-xs text-brand-600 font-semibold mt-0.5">${p.team}</p>
+                    </div>
+
+                    <div class="bg-slate-50 py-2 px-3 rounded-2xl border border-slate-100 space-y-1">
+                        <div class="text-xs font-bold text-slate-700">${p.challengeTitle}</div>
+                        <div class="text-lg font-extrabold text-brand-600">${p.scores.total} <span class="text-xs font-medium text-slate-400">/ 100</span></div>
+                    </div>
+
+                    <div class="flex justify-center space-x-3 text-xs pt-1">
+                        ${p.videoUrl ? `<a href="${p.videoUrl}" target="_blank" class="text-red-500 hover:underline flex items-center"><i class="fa-brands fa-youtube mr-1"></i>Pitch</a>` : ''}
+                        ${p.webUrl ? `<a href="${p.webUrl}" target="_blank" class="text-blue-500 hover:underline flex items-center"><i class="fa-solid fa-globe mr-1"></i>Live</a>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // 6. ANNOUNCEMENTS & BULLETIN BOARD
+        // ==========================================
+        function renderAnnouncements() {
+            const container = document.getElementById('announcementsList');
+            const notices = getNotices();
+
+            container.innerHTML = notices.map(n => {
+                let tagColor = 'bg-slate-100 text-slate-700';
+                if (n.category === 'Winner') tagColor = 'badge-winner';
+                else if (n.category === 'Finalists') tagColor = 'badge-finalist';
+                else if (n.category === 'Milestone') tagColor = 'bg-amber-100 text-amber-800';
+                else tagColor = 'bg-blue-100 text-blue-800';
+
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-3 hover:shadow-md transition">
+                    <div class="flex justify-between items-start gap-2">
+                        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${tagColor}">${n.category}</span>
+                        <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> ${n.date}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">${n.title}</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">${n.content}</p>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <span><i class="fa-solid fa-bullhorn text-brand-600 mr-1.5"></i> Issued by: <strong>${n.author}</strong></span>
+                        <span class="text-brand-600 cursor-pointer font-medium hover:underline" onclick="switchTab('leaderboard')">View Standings &rarr;</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function handlePostAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('noticeTitle').value.trim();
+            const tag = document.getElementById('noticeTag').value;
+            const author = document.getElementById('noticeAuthor').value.trim();
+            const body = document.getElementById('noticeBody').value.trim();
+
+            const notices = getNotices();
+            notices.unshift({
+                id: 'N-' + Date.now(),
+                title: title,
+                category: tag,
+                author: author,
+                date: new Date().toISOString().split('T')[0],
+                content: body
+            });
+            saveNotices(notices);
+
+            document.getElementById('ribbonNotice').textContent = `📢 ${title}`;
+            closeModal('postNoticeModal');
+            renderAnnouncements();
+            showToast('Announcement broadcasted to public portal!', 'success');
+        }
+
+        // ==========================================
+        // 7. REGISTRATION & CREATION HANDLERS
+        // ==========================================
+        function handleParticipantSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('partName').value.trim();
+            const email = document.getElementById('partEmail').value.trim();
+            const affil = document.getElementById('partAffiliation').value.trim();
+
+            currentUser = { name, org: affil, email };
+            const selector = document.getElementById('userRoleSelector');
+            selector.value = 'participant';
+            handleRoleChange('participant');
+
+            closeModal('participantSignupModal');
+            showToast(`Welcome aboard, ${name}! Your innovator profile is active.`, 'success');
+            switchTab('submit');
+        }
+
+        function handleOrgRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('newOrgName').value.trim();
+            const domain = document.getElementById('newOrgDomain').value.trim();
+            const bio = document.getElementById('newOrgBio').value.trim();
+            const website = document.getElementById('newOrgWebsite').value.trim();
+            const crit1 = document.getElementById('crit1').value.trim();
+            const crit2 = document.getElementById('crit2').value.trim();
+            const crit3 = document.getElementById('crit3').value.trim();
+            const crit4 = document.getElementById('crit4').value.trim();
+
+            const newOrg = {
+                id: 'ORG-' + Date.now(),
+                name: name,
+                focus: domain,
+                website: website,
+                bio: bio,
+                criteria: [
+                    { name: crit1, weight: 25 },
+                    { name: crit2, weight: 25 },
+                    { name: crit3, weight: 25 },
+                    { name: crit4, weight: 25 }
+                ]
+            };
+
+            const orgs = getOrgs();
+            orgs.unshift(newOrg);
+            saveOrgs(orgs);
+
+            // Switch current user to this Org
+            currentUser = { name: `${name} Lead Evaluator`, org: name, email: `evaluator@${new URL(website).hostname}` };
+            document.getElementById('userRoleSelector').value = 'organization';
+            handleRoleChange('organization');
+
+            closeModal('orgRegisterModal');
+            populateChallengeDropdown();
+            renderOrganizations();
+            showToast(`Organisation ${name} registered with explicit evaluation criteria!`, 'success');
+            switchTab('organizations');
+        }
+
+        function handleCreateChallenge(e) {
+            e.preventDefault();
+            const orgId = document.getElementById('chalOrgSelect').value;
+            const title = document.getElementById('chalTitle').value.trim();
+            const domain = document.getElementById('chalDomain').value;
+            const prize = document.getElementById('chalPrize').value.trim();
+            const desc = document.getElementById('chalDesc').value.trim();
+            const deadline = document.getElementById('chalDeadline').value;
+            const deliverables = document.getElementById('chalDeliverables').value.trim();
+
+            const orgs = getOrgs();
+            const org = orgs.find(o => o.id === orgId) || orgs[0];
+
+            const newChal = {
+                id: 'C-' + Date.now(),
+                orgId: org.id,
+                orgName: org.name,
+                title: title,
+                domain: domain,
+                prize: prize,
+                deadline: deadline,
+                deliverables: deliverables,
+                description: desc
+            };
+
+            const challenges = getChallenges();
+            challenges.unshift(newChal);
+            saveChallenges(challenges);
+
+            // Post bulletin
+            const notices = getNotices();
+            notices.unshift({
+                id: 'N-' + Date.now(),
+                title: `New Challenge Launched: ${title}`,
+                category: 'Milestone',
+                author: org.name,
+                date: new Date().toISOString().split('T')[0],
+                content: `${org.name} has launched a new problem statement with a prize pool of ${prize}. Submissions are open until ${deadline}.`
+            });
+            saveNotices(notices);
+
+            closeModal('createChallengeModal');
+            populateChallengeDropdown();
+            renderChallenges();
+            updateQuickStats();
+            showToast('New innovation problem statement published!', 'success');
+        }
+
+        // ==========================================
+        // MODAL & TOAST CONTROLLERS
+        // ==========================================
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-circle-exclamation text-rose-400 text-base';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3600);
+        }
+
+        // Initial Boot
+        function renderAllViews() {
+            renderChallenges();
+            renderOrganizations();
+            populateChallengeDropdown();
+            renderMyProposals();
+            renderEvaluationDeck();
+            renderLeaderboard('all');
+            renderAnnouncements();
+            updateQuickStats();
+        }
+
+        window.onload = function () {
+            // Check if initial datasets are loaded; if not seed them
+            if (!localStorage.getItem(STORAGE_KEY_ORGS)) saveOrgs(SEED_ORGANIZATIONS);
+            if (!localStorage.getItem(STORAGE_KEY_CHALLENGES)) saveChallenges(SEED_CHALLENGES);
+            if (!localStorage.getItem(STORAGE_KEY_PROPOSALS)) saveProposals(SEED_PROPOSALS);
+            if (!localStorage.getItem(STORAGE_KEY_NOTICES)) saveNotices(SEED_NOTICES);
+
+            handleRoleChange('participant');
+            renderAllViews();
+        };
+    </script>
+</body>
+</html>
